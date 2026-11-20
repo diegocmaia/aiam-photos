@@ -103,7 +103,7 @@ a:hover { color: var(--fg); }
 
 /* viewer */
 .lb {
-  position: fixed; inset: 0; z-index: 20; background: var(--shade);
+  position: fixed; inset: 0; z-index: 20; background: var(--bg);
   display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
   padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
   animation: fade .25s ease;
@@ -116,8 +116,10 @@ a:hover { color: var(--fg); }
   scrollbar-width: none; margin-block: 16px;
 }
 .track::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 100%; min-width: 0; height: 100%; scroll-snap-align: center; display: grid; place-items: center; }
-.slide img, .slide video { max-width: 100%; max-height: 100%; object-fit: contain; display: block; background: var(--line); }
+.slide { flex: 0 0 100%; min-width: 0; height: 100%; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+/* photos fill the slide and letterbox inside it; videos keep their own box so the controls sit on the picture */
+.slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.slide video { display: block; width: 100%; height: auto; max-height: 100%; object-fit: contain; }
 .mid { display: flex; align-items: center; gap: 14px; }
 .dots { display: flex; gap: 6px; }
 .dots button { all: unset; width: 6px; height: 6px; border-radius: 50%; background: var(--line); cursor: pointer; }
