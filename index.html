@@ -56,15 +56,16 @@ body {
 }
 .wrap { max-width: 1400px; margin: 0 auto; }
 
+/* a quiet masthead: wordmark and details share one line, the photos do the talking */
 header {
-  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 8px 24px;
-  padding-block: clamp(32px, 7vw, 88px) clamp(24px, 4vw, 48px);
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 24px;
+  padding-block: clamp(24px, 4vw, 44px) clamp(14px, 2vw, 22px);
   border-bottom: 1px solid var(--line);
 }
 h1 {
-  margin: 0; grid-column: 1 / -1;
-  font-family: var(--display); font-stretch: 62%; font-weight: 800;
-  font-size: clamp(88px, 22vw, 320px); line-height: .78; letter-spacing: -.035em;
+  margin: 0;
+  font-family: var(--display); font-stretch: 75%; font-weight: 700;
+  font-size: clamp(30px, 5vw, 52px); line-height: 1; letter-spacing: -.02em;
   text-transform: uppercase;
 }
 h1 .dot { color: var(--edge); }
@@ -163,14 +164,12 @@ a:hover { color: var(--fg); }
   <header>
     <h1>aiam<span class="dot">.</span></h1>
     <div class="meta"><span>Photographs</span><span><b id="nPosts"></b> posts · <b id="nFrames"></b> frames</span><span>Mar 2025 — Aug 2026</span></div>
-    <div class="meta"><span>Street · light · moon</span></div>
   </header>
 
   <main class="sheet" id="sheet"></main>
 
   <footer>
     <span>© aiam. All photographs by the author.</span>
-    <span>Previously on <a href="https://www.instagram.com/aiam.photos/" target="_blank" rel="noopener">Instagram</a></span>
   </footer>
 </div>
 
