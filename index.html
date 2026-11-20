@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="aiam.photos">
+<meta property="og:image" content="photos/thumb/2026-08-26_DchTcWWDh58_1.jpg">
+<title>aiam.photos</title>
+<meta name="description" content="Photographs by aiam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a contact sheet. Huge condensed wordmark, then a quiet masonry of frames, each tagged with its frame number and date like a film edge. */
+:root {
+  --bg: #0e0d0c;
+  --fg: #ebe6df;
+  --muted: #8a837a;
+  --line: #2a2724;
+  --edge: #e2a45a;           /* film-edge amber, used only for frame numbers */
+  --shade: rgba(8, 7, 6, .94);
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3f1ee; --fg: #161412; --muted: #77706a; --line: #dcd7d1; --edge: #b0651c;
+    --shade: rgba(243, 241, 238, .96); color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3f1ee; --fg: #161412; --muted: #77706a; --line: #dcd7d1; --edge: #b0651c;
+  --shade: rgba(243, 241, 238, .96); color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--mono); font-size: 12px; letter-spacing: .02em;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; }
+
+header {
+  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 8px 24px;
+  padding-block: clamp(32px, 7vw, 88px) clamp(24px, 4vw, 48px);
+  border-bottom: 1px solid var(--line);
+}
+h1 {
+  margin: 0; grid-column: 1 / -1;
+  font-family: var(--display); font-stretch: 62%; font-weight: 800;
+  font-size: clamp(88px, 22vw, 320px); line-height: .78; letter-spacing: -.035em;
+  text-transform: uppercase;
+}
+h1 .dot { color: var(--edge); }
+.meta { color: var(--muted); text-transform: uppercase; letter-spacing: .12em; display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.meta b { color: var(--fg); font-weight: 500; }
+
+.sheet {
+  columns: 3 320px; column-gap: clamp(12px, 2vw, 24px);
+  padding-top: clamp(20px, 3vw, 36px);
+}
+.frame {
+  break-inside: avoid; margin: 0 0 clamp(16px, 2.4vw, 32px);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.frame button {
+  all: unset; cursor: zoom-in; display: block; overflow: hidden; background: var(--line);
+  outline-offset: 3px;
+}
+.frame button:focus-visible { outline: 2px solid var(--edge); }
+.frame img {
+  display: block; width: 100%; height: auto; max-width: 100%;
+  transition: transform .9s cubic-bezier(.2,.7,.1,1), filter .6s;
+  filter: saturate(.92);
+}
+.frame button:hover img { transform: scale(1.025); filter: saturate(1); }
+figcaption { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; }
+figcaption .n { color: var(--edge); }
+
+footer {
+  margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: 11px;
+}
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { color: var(--fg); }
+
+/* stack badge on posts with more than one frame */
+.frame button { position: relative; }
+.badge {
+  position: absolute; top: 10px; right: 10px; z-index: 1;
+  padding: 4px 7px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: #f4efe8; background: rgba(12, 11, 10, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  font-variant-numeric: tabular-nums; pointer-events: none;
+}
+
+/* viewer */
+.lb {
+  position: fixed; inset: 0; z-index: 20; background: var(--shade);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  animation: fade .25s ease;
+}
+.lb-top, .lb-bot { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lb-top .n { color: var(--edge); }
+.track {
+  min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain;
+  scrollbar-width: none; margin-block: 16px;
+}
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; min-width: 0; height: 100%; scroll-snap-align: center; display: grid; place-items: center; }
+.slide img, .slide video { max-width: 100%; max-height: 100%; object-fit: contain; display: block; background: var(--line); }
+.mid { display: flex; align-items: center; gap: 14px; }
+.dots { display: flex; gap: 6px; }
+.dots button { all: unset; width: 6px; height: 6px; border-radius: 50%; background: var(--line); cursor: pointer; }
+.dots button[aria-current="true"] { background: var(--edge); }
+.dots button:focus-visible { outline: 2px solid var(--edge); outline-offset: 2px; }
+.lb .ctl {
+  font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--fg);
+  background: none; border: 1px solid var(--line); padding: 8px 14px; cursor: pointer;
+}
+.lb .ctl:hover { border-color: var(--fg); }
+.lb .ctl:focus-visible { outline: 2px solid var(--edge); outline-offset: 2px; }
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+@media (max-width: 520px) { .lb .ctl { padding: 8px 10px; } .pos { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .frame img, .lb { transition: none; animation: none; }
+  .track { scroll-behavior: auto; }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>aiam<span class="dot">.</span></h1>
+    <div class="meta"><span>Photographs</span><span><b id="nPosts"></b> posts · <b id="nFrames"></b> frames</span><span>Mar 2025 — Aug 2026</span></div>
+    <div class="meta"><span>Street · light · moon</span></div>
+  </header>
+
+  <main class="sheet" id="sheet"></main>
+
+  <footer>
+    <span>© aiam. All photographs by the author.</span>
+    <span>Previously on <a href="https://www.instagram.com/aiam.photos/" target="_blank" rel="noopener">Instagram</a></span>
+  </footer>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-top"><span><span class="n" id="lbN"></span> &nbsp; <span id="lbD"></span></span><button class="ctl" id="lbClose" type="button">Close</button></div>
+  <div class="track" id="track"></div>
+  <div class="lb-bot">
+    <button class="ctl" id="lbPrev" type="button">← Prev</button>
+    <div class="mid"><div class="dots" id="dots"></div><span class="pos" id="lbPos"></span></div>
+    <button class="ctl" id="lbNext" type="button">Next →</button>
+  </div>
+</div>
+
+<script>
+// Newest post first. Each item: [file name without extension, width, height, isVideo].
+// Photos live in photos/thumb/ (grid, ~1000px) and photos/large/ (viewer).
+// Videos live in photos/video/<name>.mp4, with a poster frame in photos/thumb/<name>.jpg.
+const POSTS = [
+  { id: "DchTcWWDh58", date: "2026-08-26", items: [
+    ["2026-08-26_DchTcWWDh58_1", 1000,1000, 0],
+    ["2026-08-26_DchTcWWDh58_2", 1000,1000, 0],
+  ]},
+  { id: "Da6Rbx5j4xH", date: "2026-07-17", items: [
+    ["2026-07-17_Da6Rbx5j4xH_1", 750,1000, 0],
+    ["2026-07-17_Da6Rbx5j4xH_2", 750,1000, 0],
+    ["2026-07-17_Da6Rbx5j4xH_3", 750,1000, 0],
+    ["2026-07-17_Da6Rbx5j4xH_4", 750,1000, 0],
+    ["2026-07-17_Da6Rbx5j4xH_5", 750,1000, 0],
+  ]},
+  { id: "DadfsczDq3v", date: "2026-07-06", items: [
+    ["2026-07-06_DadfsczDq3v_1", 1000,1000, 0],
+    ["2026-07-06_DadfsczDq3v_2", 1000,1000, 0],
+    ["2026-07-06_DadfsczDq3v_3", 1000,1000, 0],
+  ]},
+  { id: "DZBTMTYuJP0", date: "2026-05-31", items: [
+    ["2026-05-31_DZBTMTYuJP0_1", 1000,1000, 0],
+  ]},
+  { id: "DWwG2-JDs3a", date: "2026-04-05", items: [
+    ["2026-04-05_DWwG2-JDs3a_1", 1000,1000, 0],
+    ["2026-04-05_DWwG2-JDs3a_2", 1000,1000, 0],
+  ]},
+  { id: "DVWpkxRj9wS", date: "2026-03-01", items: [
+    ["2026-03-01_DVWpkxRj9wS_1", 1000,1000, 0],
+  ]},
+  { id: "DVWpdmVD-an", date: "2026-03-01", items: [
+    ["2026-03-01_DVWpdmVD-an_1", 1000,1000, 0],
+    ["2026-03-01_DVWpdmVD-an_2", 1000,1000, 0],
+    ["2026-03-01_DVWpdmVD-an_3", 1000,1000, 0],
+    ["2026-03-01_DVWpdmVD-an_4", 1000,1000, 0],
+    ["2026-03-01_DVWpdmVD-an_5", 1000,1000, 0],
+  ]},
+  { id: "DTxsuybjg5l", date: "2026-01-21", items: [
+    ["2026-01-21_DTxsuybjg5l_1", 1000,1000, 0],
+    ["2026-01-21_DTxsuybjg5l_2", 1000,999, 0],
+    ["2026-01-21_DTxsuybjg5l_3", 1000,1000, 0],
+    ["2026-01-21_DTxsuybjg5l_4", 1000,1000, 0],
+  ]},
+  { id: "DQAMTwdj2e1", date: "2025-10-19", items: [
+    ["2025-10-19_DQAMTwdj2e1_1", 1000,1000, 0],
+    ["2025-10-19_DQAMTwdj2e1_2", 720,720, 1],
+  ]},
+  { id: "DQALq2gjzc8", date: "2025-10-19", items: [
+    ["2025-10-19_DQALq2gjzc8_1", 1000,1000, 0],
+    ["2025-10-19_DQALq2gjzc8_2", 1000,1000, 0],
+    ["2025-10-19_DQALq2gjzc8_3", 1000,1000, 0],
+  ]},
+  { id: "DOZp0TcDrTS", date: "2025-09-10", items: [
+    ["2025-09-10_DOZp0TcDrTS_1", 1000,1000, 0],
+  ]},
+  { id: "DMqpEIGqk5C", date: "2025-07-28", items: [
+    ["2025-07-28_DMqpEIGqk5C_1", 750,1000, 0],
+  ]},
+  { id: "DMSolQjKP9U", date: "2025-07-19", items: [
+    ["2025-07-19_DMSolQjKP9U_1", 997,1000, 0],
+  ]},
+  { id: "DIwPUbvqTaT", date: "2025-04-22", items: [
+    ["2025-04-22_DIwPUbvqTaT_1", 1000,1000, 0],
+    ["2025-04-22_DIwPUbvqTaT_2", 720,720, 1],
+  ]},
+  { id: "DImiqAsuSdA", date: "2025-04-18", items: [
+    ["2025-04-18_DImiqAsuSdA_1", 1000,1000, 0],
+  ]},
+  { id: "DHRLhWwqdmf", date: "2025-03-16", items: [
+    ["2025-03-16_DHRLhWwqdmf_1", 1000,1000, 0],
+    ["2025-03-16_DHRLhWwqdmf_2", 1000,1000, 0],
+    ["2025-03-16_DHRLhWwqdmf_3", 1000,1000, 0],
+    ["2025-03-16_DHRLhWwqdmf_4", 1000,1000, 0],
+  ]},
+  { id: "DHRLEK3qnfH", date: "2025-03-16", items: [
+    ["2025-03-16_DHRLEK3qnfH_1", 1000,1000, 0],
+  ]},
+  { id: "DG8fQALqqeK", date: "2025-03-08", items: [
+    ["2025-03-08_DG8fQALqqeK_1", 1000,666, 0],
+  ]},
+  { id: "DG8fFYvKlkc", date: "2025-03-08", items: [
+    ["2025-03-08_DG8fFYvKlkc_1", 1000,1000, 0],
+  ]},
+  { id: "DG36UJhKKlR", date: "2025-03-06", items: [
+    ["2025-03-06_DG36UJhKKlR_1", 800,1000, 0],
+  ]},
+  { id: "DG1SYLRO2NB", date: "2025-03-05", items: [
+    ["2025-03-05_DG1SYLRO2NB_1", 1000,666, 0],
+  ]},
+  { id: "DG1SVz-OP6l", date: "2025-03-05", items: [
+    ["2025-03-05_DG1SVz-OP6l_1", 1000,1000, 0],
+  ]},
+  { id: "DG1SO78Oy4d", date: "2025-03-05", items: [
+    ["2025-03-05_DG1SO78Oy4d_1", 1000,1000, 0],
+  ]},
+  { id: "DG1I9zLuMa5", date: "2025-03-05", items: [
+    ["2025-03-05_DG1I9zLuMa5_1", 800,1000, 0],
+  ]},
+  { id: "DG1I6bUuIwf", date: "2025-03-05", items: [
+    ["2025-03-05_DG1I6bUuIwf_1", 1000,1000, 0],
+  ]},
+];
+
+const fmt = d => new Date(d + "T12:00:00").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+const total = POSTS.length;
+// frame numbers count up in time order, like a roll: the oldest post is 01A
+const frameNo = i => String(total - i).padStart(2, "0") + "A";
+document.getElementById("nPosts").textContent = total;
+document.getElementById("nFrames").textContent = POSTS.reduce((n, p) => n + p.items.length, 0);
+
+const sheet = document.getElementById("sheet");
+POSTS.forEach((p, i) => {
+  const [name, w, h, isVid] = p.items[0];
+  const n = p.items.length, hasVid = p.items.some(it => it[3]);
+  const badge = n > 1 || hasVid ? `<span class="badge">${n > 1 ? "1/" + n : ""}${n > 1 && hasVid ? " · " : ""}${hasVid ? "▶ video" : ""}</span>` : "";
+  const fig = document.createElement("figure");
+  fig.className = "frame";
+  fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/thumb/${name}.jpg" width="${w}" height="${h}" alt="Photograph, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
+    <figcaption><span class="n">${frameNo(i)}</span><span>${fmt(p.date)}</span></figcaption>`;
+  fig.querySelector("button").addEventListener("click", () => open(i));
+  sheet.appendChild(fig);
+});
+
+const lb = document.getElementById("lb"), track = document.getElementById("track"), dots = document.getElementById("dots");
+let post = 0, slide = 0, lastFocus = null;
+
+function slideEl([name, w, h, isVid]) {
+  const s = document.createElement("div");
+  s.className = "slide";
+  if (isVid) {
+    s.innerHTML = `<video src="photos/video/${name}.mp4" poster="photos/thumb/${name}.jpg" width="${w}" height="${h}" muted loop playsinline controls preload="metadata"></video>`;
+  } else {
+    const img = new Image();
+    img.src = `photos/thumb/${name}.jpg`; img.width = w; img.height = h; img.alt = "Photograph";
+    const big = new Image(); big.onload = () => { img.src = big.src; }; big.src = `photos/large/${name}.jpg`;
+    s.appendChild(img);
+  }
+  return s;
+}
+
+function showPost(i, startAt = 0) {
+  post = (i + total) % total;
+  const p = POSTS[post];
+  track.replaceChildren(...p.items.map(slideEl));
+  dots.replaceChildren(...p.items.map((_, k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.setAttribute("aria-label", `Frame ${k + 1} of ${p.items.length}`);
+    b.onclick = () => goSlide(k);
+    return b;
+  }));
+  dots.hidden = p.items.length < 2;
+  document.getElementById("lbN").textContent = frameNo(post);
+  document.getElementById("lbD").textContent = fmt(p.date);
+  slide = -1;
+  const k = startAt < 0 ? p.items.length - 1 : startAt;
+  track.style.scrollBehavior = "auto"; track.scrollLeft = k * track.clientWidth; track.style.scrollBehavior = "";
+  setSlide(k);
+}
+function setSlide(k) {
+  if (k === slide) return;
+  slide = k;
+  const n = POSTS[post].items.length;
+  [...dots.children].forEach((d, j) => d.setAttribute("aria-current", j === k));
+  document.getElementById("lbPos").textContent = n > 1 ? `${k + 1} / ${n}` : `Post ${post + 1} of ${total}`;
+  track.querySelectorAll("video").forEach((v, j) => {
+    if (v.closest(".slide") === track.children[k]) v.play().catch(() => {}); else v.pause();
+  });
+}
+function goSlide(k) { track.scrollTo({ left: k * track.clientWidth }); setSlide(k); }
+function step(dir) {
+  const n = POSTS[post].items.length, k = slide + dir;
+  if (k >= 0 && k < n) goSlide(k);
+  else showPost(post + dir, dir < 0 ? -1 : 0);
+}
+let scrollT;
+track.addEventListener("scroll", () => {
+  clearTimeout(scrollT);
+  scrollT = setTimeout(() => setSlide(Math.round(track.scrollLeft / track.clientWidth)), 80);
+}, { passive: true });
+
+// swiping past the first or last frame of a post moves to the neighbouring post
+let x0 = null, startSlide = 0;
+track.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; startSlide = slide; }, { passive: true });
+track.addEventListener("touchend", e => {
+  if (x0 === null) return;
+  const dx = e.changedTouches[0].clientX - x0; x0 = null;
+  const n = POSTS[post].items.length;
+  if (dx < -60 && startSlide === n - 1) showPost(post + 1, 0);
+  else if (dx > 60 && startSlide === 0) showPost(post - 1, -1);
+});
+
+function open(i) {
+  lastFocus = document.activeElement;
+  lb.hidden = false; document.body.style.overflow = "hidden";
+  showPost(i, 0);
+  document.getElementById("lbClose").focus();
+}
+function close() {
+  track.querySelectorAll("video").forEach(v => v.pause());
+  lb.hidden = true; document.body.style.overflow = "";
+  track.replaceChildren();
+  lastFocus && lastFocus.focus();
+}
+document.getElementById("lbClose").onclick = close;
+document.getElementById("lbPrev").onclick = () => step(-1);
+document.getElementById("lbNext").onclick = () => step(1);
+track.addEventListener("click", e => { if (e.target.classList.contains("slide")) close(); });
+document.addEventListener("keydown", e => {
+  if (lb.hidden) return;
+  if (e.key === "Escape") close();
+  else if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+});
+window.addEventListener("resize", () => { if (!lb.hidden) { track.style.scrollBehavior = "auto"; track.scrollLeft = slide * track.clientWidth; track.style.scrollBehavior = ""; } });
+</script>
+</body>
+</html>
