@@ -73,11 +73,13 @@ h1 .dot { color: var(--edge); }
 .meta b { color: var(--fg); font-weight: 500; }
 
 .sheet {
-  columns: 3 320px; column-gap: clamp(12px, 2vw, 24px);
+  /* masonry built in script: posts are dealt into columns in date order, so rows read newest-first left to right */
+  display: flex; align-items: flex-start; gap: clamp(12px, 2vw, 24px);
   padding-top: clamp(20px, 3vw, 36px);
 }
+.col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
 .frame {
-  break-inside: avoid; margin: 0 0 clamp(16px, 2.4vw, 32px);
+  margin: 0 0 clamp(16px, 2.4vw, 32px);
   display: flex; flex-direction: column; gap: 8px;
 }
 .frame button {
@@ -146,7 +148,7 @@ a:hover { color: var(--fg); }
 .lb .ctl:focus-visible { outline: 2px solid var(--edge); outline-offset: 2px; }
 @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
 @media (max-width: 600px) {
-  .sheet { columns: 2; column-gap: 8px; }
+  .sheet { gap: 8px; }
   .frame { margin-bottom: 16px; gap: 6px; }
   figcaption { font-size: 9.5px; letter-spacing: .06em; }
   .badge { top: 6px; right: 6px; padding: 3px 5px; font-size: 9px; }
@@ -295,7 +297,7 @@ document.getElementById("nPosts").textContent = total;
 document.getElementById("nFrames").textContent = POSTS.reduce((n, p) => n + p.items.length, 0);
 
 const sheet = document.getElementById("sheet");
-POSTS.forEach((p, i) => {
+const frames = POSTS.map((p, i) => {
   const [name, w, h, isVid] = p.items[0];
   const n = p.items.length, hasVid = p.items.some(it => it[3]);
   const badge = n > 1 || hasVid ? `<span class="badge">${n > 1 ? "1/" + n : ""}${n > 1 && hasVid ? " " : ""}${hasVid ? "▶" : ""}</span>` : "";
@@ -304,8 +306,28 @@ POSTS.forEach((p, i) => {
   fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/grid/${name}-1000.webp" srcset="photos/grid/${name}-600.webp 600w, photos/grid/${name}-1000.webp 1000w" sizes="(max-width: 1040px) 50vw, 460px" width="${w}" height="${h}" alt="Photograph, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
     <figcaption><span class="n">${frameNo(i)}</span><span>${fmt(p.date)}</span></figcaption>`;
   fig.querySelector("button").addEventListener("click", () => open(i));
-  sheet.appendChild(fig);
+  fig.ratio = h / w;
+  return fig;
 });
+
+// Deal frames into columns in date order, each going to the shortest column (leftmost on a tie),
+// so the newest posts sit side by side across the top. Rebuilt only when the column count changes.
+let nCols = 0;
+function layout() {
+  const n = sheet.clientWidth >= 1000 ? 3 : 2;
+  if (n === nCols) return;
+  nCols = n;
+  const cols = Array.from({ length: n }, () => Object.assign(document.createElement("div"), { className: "col" }));
+  const heights = new Array(n).fill(0);
+  frames.forEach(f => {
+    const c = heights.indexOf(Math.min(...heights));
+    cols[c].appendChild(f);
+    heights[c] += f.ratio + 0.12;   // + caption and gap, in column-width units
+  });
+  sheet.replaceChildren(...cols);
+}
+layout();
+window.addEventListener("resize", layout);
 
 const lb = document.getElementById("lb"), track = document.getElementById("track"), dots = document.getElementById("dots");
 let post = 0, slide = 0, lastFocus = null;
