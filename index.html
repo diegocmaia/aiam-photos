@@ -3,8 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:type" content="website">
 <meta property="og:title" content="aiam.photos">
-<meta property="og:image" content="photos/thumb/2026-08-26_DchTcWWDh58_1.jpg">
+<meta property="og:description" content="Photographs by aiam.">
+<meta property="og:url" content="https://diegocmaia.github.io/aiam-photos/">
+<meta property="og:image" content="https://diegocmaia.github.io/aiam-photos/photos/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0e0d0c">
 <title>aiam.photos</title>
 <meta name="description" content="Photographs by aiam.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +112,9 @@ a:hover { color: var(--fg); }
 
 /* viewer */
 .lb {
+  /* the viewer is always dark, whatever the page theme: photos read best on near-black */
+  --bg: #0e0d0c; --fg: #ebe6df; --muted: #8a837a; --line: #2a2724; --edge: #e2a45a;
+  color-scheme: dark; color: var(--fg);
   position: fixed; inset: 0; z-index: 20; background: var(--bg);
   display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
   padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
@@ -132,6 +144,12 @@ a:hover { color: var(--fg); }
 .lb .ctl:hover { border-color: var(--fg); }
 .lb .ctl:focus-visible { outline: 2px solid var(--edge); outline-offset: 2px; }
 @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+@media (max-width: 600px) {
+  .sheet { columns: 2; column-gap: 8px; }
+  .frame { margin-bottom: 16px; gap: 6px; }
+  figcaption { font-size: 9.5px; letter-spacing: .06em; }
+  .badge { top: 6px; right: 6px; padding: 3px 5px; font-size: 9px; }
+}
 @media (max-width: 520px) { .lb .ctl { padding: 8px 10px; } .pos { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .frame img, .lb { transition: none; animation: none; }
@@ -168,8 +186,8 @@ a:hover { color: var(--fg); }
 
 <script>
 // Newest post first. Each item: [file name without extension, width, height, isVideo].
-// Photos live in photos/thumb/ (grid, ~1000px) and photos/large/ (viewer).
-// Videos live in photos/video/<name>.mp4, with a poster frame in photos/thumb/<name>.jpg.
+// Grid images live in photos/grid/<name>-600.webp and <name>-1000.webp; full-size photos in photos/large/<name>.jpg.
+// Videos live in photos/video/<name>.mp4 and use photos/grid/<name>-1000.webp as their poster.
 const POSTS = [
   { id: "DchTcWWDh58", date: "2026-08-26", items: [
     ["2026-08-26_DchTcWWDh58_1", 1000,1000, 0],
@@ -281,10 +299,10 @@ const sheet = document.getElementById("sheet");
 POSTS.forEach((p, i) => {
   const [name, w, h, isVid] = p.items[0];
   const n = p.items.length, hasVid = p.items.some(it => it[3]);
-  const badge = n > 1 || hasVid ? `<span class="badge">${n > 1 ? "1/" + n : ""}${n > 1 && hasVid ? " · " : ""}${hasVid ? "▶ video" : ""}</span>` : "";
+  const badge = n > 1 || hasVid ? `<span class="badge">${n > 1 ? "1/" + n : ""}${n > 1 && hasVid ? " " : ""}${hasVid ? "▶" : ""}</span>` : "";
   const fig = document.createElement("figure");
   fig.className = "frame";
-  fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/thumb/${name}.jpg" width="${w}" height="${h}" alt="Photograph, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
+  fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/grid/${name}-1000.webp" srcset="photos/grid/${name}-600.webp 600w, photos/grid/${name}-1000.webp 1000w" sizes="(max-width: 1040px) 50vw, 460px" width="${w}" height="${h}" alt="Photograph, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
     <figcaption><span class="n">${frameNo(i)}</span><span>${fmt(p.date)}</span></figcaption>`;
   fig.querySelector("button").addEventListener("click", () => open(i));
   sheet.appendChild(fig);
@@ -297,10 +315,10 @@ function slideEl([name, w, h, isVid]) {
   const s = document.createElement("div");
   s.className = "slide";
   if (isVid) {
-    s.innerHTML = `<video src="photos/video/${name}.mp4" poster="photos/thumb/${name}.jpg" width="${w}" height="${h}" muted loop playsinline controls preload="metadata"></video>`;
+    s.innerHTML = `<video src="photos/video/${name}.mp4" poster="photos/grid/${name}-1000.webp" width="${w}" height="${h}" muted loop playsinline controls preload="metadata"></video>`;
   } else {
     const img = new Image();
-    img.src = `photos/thumb/${name}.jpg`; img.width = w; img.height = h; img.alt = "Photograph";
+    img.src = `photos/grid/${name}-1000.webp`; img.width = w; img.height = h; img.alt = "Photograph";
     const big = new Image(); big.onload = () => { img.src = big.src; }; big.src = `photos/large/${name}.jpg`;
     s.appendChild(img);
   }
@@ -310,6 +328,7 @@ function slideEl([name, w, h, isVid]) {
 function showPost(i, startAt = 0) {
   post = (i + total) % total;
   const p = POSTS[post];
+  if (location.hash !== "#" + p.id) history.replaceState(null, "", "#" + p.id);
   track.replaceChildren(...p.items.map(slideEl));
   dots.replaceChildren(...p.items.map((_, k) => {
     const b = document.createElement("button");
@@ -358,18 +377,39 @@ track.addEventListener("touchend", e => {
   else if (dx > 60 && startSlide === 0) showPost(post - 1, -1);
 });
 
+// Each post has its own link (#<post id>), so a single photo can be shared.
+// Opening from the grid adds a history entry, so the phone's back gesture closes the viewer.
+let pushed = false;
 function open(i) {
-  lastFocus = document.activeElement;
-  lb.hidden = false; document.body.style.overflow = "hidden";
+  if (!pushed) { history.pushState(null, "", "#" + POSTS[i].id); pushed = true; }
+  show(i);
+}
+function show(i) {
+  if (lb.hidden) {
+    lastFocus = document.activeElement;
+    lb.hidden = false; document.body.style.overflow = "hidden";
+  }
   showPost(i, 0);
   document.getElementById("lbClose").focus();
 }
-function close() {
+function hide() {
   track.querySelectorAll("video").forEach(v => v.pause());
   lb.hidden = true; document.body.style.overflow = "";
   track.replaceChildren();
   lastFocus && lastFocus.focus();
 }
+function close() {
+  if (pushed) { pushed = false; history.back(); return; }   // popstate hides the viewer
+  history.replaceState(null, "", location.pathname + location.search);
+  hide();
+}
+function route() {
+  const i = POSTS.findIndex(p => "#" + p.id === location.hash);
+  if (i >= 0) { if (lb.hidden || i !== post) show(i); }
+  else if (!lb.hidden) { pushed = false; hide(); }
+}
+window.addEventListener("popstate", route);
+route();   // a shared link opens straight into its post
 document.getElementById("lbClose").onclick = close;
 document.getElementById("lbPrev").onclick = () => step(-1);
 document.getElementById("lbNext").onclick = () => step(1);
