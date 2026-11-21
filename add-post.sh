@@ -92,7 +92,8 @@ while [ $# -gt 0 ]; do
     *) die "unsupported file type: $file" ;;
   esac
 
-  python3 -I -c 'import json,sys; print(json.dumps(sys.argv[1:]))' "$name" "$w" "$h" "$video" "$alt" >> "$entries"
+  colour=$(python3 -I tools/colour.py "photos/grid/$name-600.webp")   # for the colour sort and the viewer glow
+  python3 -I -c 'import json,sys; print(json.dumps(sys.argv[1:]))' "$name" "$w" "$h" "$video" "$alt" "$colour" >> "$entries"
   echo "  added $name (${w}x${h}${alt:+, \"$alt\"})"
   alt=""
 done
@@ -104,8 +105,8 @@ import json, sys
 post_id, date, entries = sys.argv[1], sys.argv[2], sys.argv[3]
 items = []
 for line in open(entries):
-    name, w, h, video, alt = json.loads(line)
-    items.append(f'    [{json.dumps(name)}, {int(w)},{int(h)}, {int(video)}, {json.dumps(alt, ensure_ascii=False)}],')
+    name, w, h, video, alt, colour = json.loads(line)
+    items.append(f'    [{json.dumps(name)}, {int(w)},{int(h)}, {int(video)}, {json.dumps(alt, ensure_ascii=False)}, {json.dumps(colour)}],')
 block = f'  {{ id: {json.dumps(post_id)}, date: {json.dumps(date)}, items: [\n' + "\n".join(items) + "\n  ]},\n"
 src = open("index.html", encoding="utf-8").read()
 anchor = "const POSTS = [\n"

@@ -32,11 +32,11 @@ Each post in `index.html` looks like this:
 
 ```js
 { id: "20261201a", date: "2026-12-01", items: [
-  ["2026-12-01_20261201a_1", 1440, 1080, 0, "Tram stop in the snow at night"],   // name, width, height, isVideo, description
+  ["2026-12-01_20261201a_1", 1440, 1080, 0, "Tram stop in the snow at night", "#4f6a8a"],   // name, width, height, isVideo, description, main colour
 ]},
 ```
 
-Posts are sorted by date on the page, so their order in the file doesn't matter. The post count and date range in the header update on their own.
+The main colour (used by the Colour sort and the glow behind photos in the viewer) comes from `tools/colour.py`. Posts are sorted by date on the page, so their order in the file doesn't matter. The post count and date range in the header update on their own.
 
 ## Analytics
 
