@@ -165,7 +165,7 @@ a:hover { color: var(--fg); }
 <div class="wrap">
   <header>
     <h1>aiam<span class="dot">.</span></h1>
-    <div class="meta"><span>Photographs</span><span><b id="nPosts"></b> posts · <b id="nFrames"></b> frames</span><span>Mar 2025 — Aug 2026</span></div>
+    <div class="meta"><span>Photographs</span><span><b id="nPosts"></b> posts · <b id="nFrames"></b> frames</span><span id="span"></span></div>
   </header>
 
   <main class="sheet" id="sheet"></main>
@@ -191,106 +191,110 @@ a:hover { color: var(--fg); }
 // Videos live in photos/video/<name>.mp4 and use photos/grid/<name>-1000.webp as their poster.
 const POSTS = [
   { id: "DchTcWWDh58", date: "2026-08-26", items: [
-    ["2026-08-26_DchTcWWDh58_1", 1000,1000, 0],
-    ["2026-08-26_DchTcWWDh58_2", 1000,1000, 0],
+    ["2026-08-26_DchTcWWDh58_1", 1000,1000, 0, "Beach at golden hour, a lone runner at the water's edge and high-rise towers behind the palms"],
+    ["2026-08-26_DchTcWWDh58_2", 1000,1000, 0, "Close-up of rippled sand with soft shadows in warm light"],
   ]},
   { id: "Da6Rbx5j4xH", date: "2026-07-17", items: [
-    ["2026-07-17_Da6Rbx5j4xH_1", 750,1000, 0],
-    ["2026-07-17_Da6Rbx5j4xH_2", 750,1000, 0],
-    ["2026-07-17_Da6Rbx5j4xH_3", 750,1000, 0],
-    ["2026-07-17_Da6Rbx5j4xH_4", 750,1000, 0],
-    ["2026-07-17_Da6Rbx5j4xH_5", 750,1000, 0],
+    ["2026-07-17_Da6Rbx5j4xH_1", 750,1000, 0, "Tiled dome of a baroque church against a blue sky, birds overhead"],
+    ["2026-07-17_Da6Rbx5j4xH_2", 750,1000, 0, "Narrow street of tall buildings with hanging shop signs, leading to a white domed church"],
+    ["2026-07-17_Da6Rbx5j4xH_3", 750,1000, 0, "Looking straight up between balconies at a strip of blue sky"],
+    ["2026-07-17_Da6Rbx5j4xH_4", 750,1000, 0, "Wall of framed The Napolitaner posters above a low shelf of books"],
+    ["2026-07-17_Da6Rbx5j4xH_5", 750,1000, 0, "Pink bucket hanging on a rope in a narrow alley, a green car parked beside it"],
   ]},
   { id: "DadfsczDq3v", date: "2026-07-06", items: [
-    ["2026-07-06_DadfsczDq3v_1", 1000,1000, 0],
-    ["2026-07-06_DadfsczDq3v_2", 1000,1000, 0],
-    ["2026-07-06_DadfsczDq3v_3", 1000,1000, 0],
+    ["2026-07-06_DadfsczDq3v_1", 1000,1000, 0, "Top of the Colosseum rising above olive trees"],
+    ["2026-07-06_DadfsczDq3v_2", 1000,1000, 0, "Arches of the Colosseum against a clear blue sky"],
+    ["2026-07-06_DadfsczDq3v_3", 1000,1000, 0, "Ruined arches and walls of the Colosseum in strong sunlight"],
   ]},
   { id: "DZBTMTYuJP0", date: "2026-05-31", items: [
-    ["2026-05-31_DZBTMTYuJP0_1", 1000,1000, 0],
+    ["2026-05-31_DZBTMTYuJP0_1", 1000,1000, 0, "Full moon alone in a black sky"],
   ]},
   { id: "DWwG2-JDs3a", date: "2026-04-05", items: [
-    ["2026-04-05_DWwG2-JDs3a_1", 1000,1000, 0],
-    ["2026-04-05_DWwG2-JDs3a_2", 1000,1000, 0],
+    ["2026-04-05_DWwG2-JDs3a_1", 1000,1000, 0, "Blue, white and orange patterned ceramic tiles"],
+    ["2026-04-05_DWwG2-JDs3a_2", 1000,1000, 0, "Reflection of a man in a café window, behind a bottle holding dried flowers"],
   ]},
   { id: "DVWpkxRj9wS", date: "2026-03-01", items: [
-    ["2026-03-01_DVWpkxRj9wS_1", 1000,1000, 0],
+    ["2026-03-01_DVWpkxRj9wS_1", 1000,1000, 0, "People climbing and sitting on the stone tiers of an ancient amphitheatre"],
   ]},
   { id: "DVWpdmVD-an", date: "2026-03-01", items: [
-    ["2026-03-01_DVWpdmVD-an_1", 1000,1000, 0],
-    ["2026-03-01_DVWpdmVD-an_2", 1000,1000, 0],
-    ["2026-03-01_DVWpdmVD-an_3", 1000,1000, 0],
-    ["2026-03-01_DVWpdmVD-an_4", 1000,1000, 0],
-    ["2026-03-01_DVWpdmVD-an_5", 1000,1000, 0],
+    ["2026-03-01_DVWpdmVD-an_1", 1000,1000, 0, "Busy café terrace under a red umbrella outside L'Auberge"],
+    ["2026-03-01_DVWpdmVD-an_2", 1000,1000, 0, "Diners at checked tablecloths on the terrace of a bistro called Pralyon"],
+    ["2026-03-01_DVWpdmVD-an_3", 1000,1000, 0, "Crowded old-town street of shops, a young man in a Nike jacket in the foreground"],
+    ["2026-03-01_DVWpdmVD-an_4", 1000,1000, 0, "Woman walking past a florist's display of pink hydrangeas"],
+    ["2026-03-01_DVWpdmVD-an_5", 1000,1000, 0, "Puppet show booth outside a small puppet museum shop"],
   ]},
   { id: "DTxsuybjg5l", date: "2026-01-21", items: [
-    ["2026-01-21_DTxsuybjg5l_1", 1000,1000, 0],
-    ["2026-01-21_DTxsuybjg5l_2", 1000,999, 0],
-    ["2026-01-21_DTxsuybjg5l_3", 1000,1000, 0],
-    ["2026-01-21_DTxsuybjg5l_4", 1000,1000, 0],
+    ["2026-01-21_DTxsuybjg5l_1", 1000,1000, 0, "Quatrefoil openings in a stone wall framing a cross and an altar beyond"],
+    ["2026-01-21_DTxsuybjg5l_2", 1000,999, 0, "Cloister arcade with stone columns and blue-and-white tiled walls"],
+    ["2026-01-21_DTxsuybjg5l_3", 1000,1000, 0, "Old house with a tiled roof overlooking a river and mangroves"],
+    ["2026-01-21_DTxsuybjg5l_4", 1000,1000, 0, "Dark chapel with wooden pews and an open door onto a balcony and palm trees"],
   ]},
   { id: "DQAMTwdj2e1", date: "2025-10-19", items: [
-    ["2025-10-19_DQAMTwdj2e1_1", 1000,1000, 0],
-    ["2025-10-19_DQAMTwdj2e1_2", 720,720, 1],
+    ["2025-10-19_DQAMTwdj2e1_1", 1000,1000, 0, "Green and pink boat on a river below a hill of coconut palms"],
+    ["2025-10-19_DQAMTwdj2e1_2", 720,720, 1, "Video: green and pink boat crossing a river below a hill of coconut palms"],
   ]},
   { id: "DQALq2gjzc8", date: "2025-10-19", items: [
-    ["2025-10-19_DQALq2gjzc8_1", 1000,1000, 0],
-    ["2025-10-19_DQALq2gjzc8_2", 1000,1000, 0],
-    ["2025-10-19_DQALq2gjzc8_3", 1000,1000, 0],
+    ["2025-10-19_DQALq2gjzc8_1", 1000,1000, 0, "Close-up of a grey and white zebu with a twig caught on its ear"],
+    ["2025-10-19_DQALq2gjzc8_2", 1000,1000, 0, "Window in a dark room framing a dry yard with a fence and washing line"],
+    ["2025-10-19_DQALq2gjzc8_3", 1000,1000, 0, "Lone tree in dry scrubland under a cloudy sky"],
   ]},
   { id: "DOZp0TcDrTS", date: "2025-09-10", items: [
-    ["2025-09-10_DOZp0TcDrTS_1", 1000,1000, 0],
+    ["2025-09-10_DOZp0TcDrTS_1", 1000,1000, 0, "Evening crowd at an outdoor bar under string lights"],
   ]},
   { id: "DMqpEIGqk5C", date: "2025-07-28", items: [
-    ["2025-07-28_DMqpEIGqk5C_1", 750,1000, 0],
+    ["2025-07-28_DMqpEIGqk5C_1", 750,1000, 0, "Man with a backpack in a dim burger restaurant with red pendant lamps"],
   ]},
   { id: "DMSolQjKP9U", date: "2025-07-19", items: [
-    ["2025-07-19_DMSolQjKP9U_1", 997,1000, 0],
+    ["2025-07-19_DMSolQjKP9U_1", 997,1000, 0, "Red-and-white striped café awnings below a tall twin glass tower"],
   ]},
   { id: "DIwPUbvqTaT", date: "2025-04-22", items: [
-    ["2025-04-22_DIwPUbvqTaT_1", 1000,1000, 0],
-    ["2025-04-22_DIwPUbvqTaT_2", 720,720, 1],
+    ["2025-04-22_DIwPUbvqTaT_1", 1000,1000, 0, "Courtyard garden with a bronze statue, people on benches and spring flowers"],
+    ["2025-04-22_DIwPUbvqTaT_2", 720,720, 1, "Video: orange, yellow and purple tulips seen from above"],
   ]},
   { id: "DImiqAsuSdA", date: "2025-04-18", items: [
-    ["2025-04-18_DImiqAsuSdA_1", 1000,1000, 0],
+    ["2025-04-18_DImiqAsuSdA_1", 1000,1000, 0, "Silhouetted crowd in front of glowing multicoloured light pavilions at dusk"],
   ]},
   { id: "DHRLhWwqdmf", date: "2025-03-16", items: [
-    ["2025-03-16_DHRLhWwqdmf_1", 1000,1000, 0],
-    ["2025-03-16_DHRLhWwqdmf_2", 1000,1000, 0],
-    ["2025-03-16_DHRLhWwqdmf_3", 1000,1000, 0],
-    ["2025-03-16_DHRLhWwqdmf_4", 1000,1000, 0],
+    ["2025-03-16_DHRLhWwqdmf_1", 1000,1000, 0, "People sitting in sun and shadow outside Pizza Nostra"],
+    ["2025-03-16_DHRLhWwqdmf_2", 1000,1000, 0, "Two women at a sunlit café table seen through a window frame"],
+    ["2025-03-16_DHRLhWwqdmf_3", 1000,1000, 0, "Corner shop window with drink fridges and the reflection of the street"],
+    ["2025-03-16_DHRLhWwqdmf_4", 1000,1000, 0, "Man in a cap eating at a small table outside the Diner Club snack bar"],
   ]},
   { id: "DHRLEK3qnfH", date: "2025-03-16", items: [
-    ["2025-03-16_DHRLEK3qnfH_1", 1000,1000, 0],
+    ["2025-03-16_DHRLEK3qnfH_1", 1000,1000, 0, "Late-night shop window with beer crates and reflected buildings"],
   ]},
   { id: "DG8fQALqqeK", date: "2025-03-08", items: [
-    ["2025-03-08_DG8fQALqqeK_1", 1000,666, 0],
+    ["2025-03-08_DG8fQALqqeK_1", 1000,666, 0, "People sitting on a park lawn beside a pond, apartment blocks behind"],
   ]},
   { id: "DG8fFYvKlkc", date: "2025-03-08", items: [
-    ["2025-03-08_DG8fFYvKlkc_1", 1000,1000, 0],
+    ["2025-03-08_DG8fFYvKlkc_1", 1000,1000, 0, "Tiled underpass opening onto a street where people wait by a yellow tram"],
   ]},
   { id: "DG36UJhKKlR", date: "2025-03-06", items: [
-    ["2025-03-06_DG36UJhKKlR_1", 800,1000, 0],
+    ["2025-03-06_DG36UJhKKlR_1", 800,1000, 0, "Pink sunset sky crossed by contrails, a thin crescent moon above"],
   ]},
   { id: "DG1SYLRO2NB", date: "2025-03-05", items: [
-    ["2025-03-05_DG1SYLRO2NB_1", 1000,666, 0],
+    ["2025-03-05_DG1SYLRO2NB_1", 1000,666, 0, "Bare trees under a lilac evening sky with a crescent moon"],
   ]},
   { id: "DG1SVz-OP6l", date: "2025-03-05", items: [
-    ["2025-03-05_DG1SVz-OP6l_1", 1000,1000, 0],
+    ["2025-03-05_DG1SVz-OP6l_1", 1000,1000, 0, "City street at dusk with a lit pedestrian-crossing sign and silhouetted buildings"],
   ]},
   { id: "DG1SO78Oy4d", date: "2025-03-05", items: [
-    ["2025-03-05_DG1SO78Oy4d_1", 1000,1000, 0],
+    ["2025-03-05_DG1SO78Oy4d_1", 1000,1000, 0, "Café window at night with a menu board and an Orange Coffee sign"],
   ]},
   { id: "DG1I9zLuMa5", date: "2025-03-05", items: [
-    ["2025-03-05_DG1I9zLuMa5_1", 800,1000, 0],
+    ["2025-03-05_DG1I9zLuMa5_1", 800,1000, 0, "Fruit and vegetable stand under a red awning on a tree-lined pavement"],
   ]},
   { id: "DG1I6bUuIwf", date: "2025-03-05", items: [
-    ["2025-03-05_DG1I6bUuIwf_1", 1000,1000, 0],
+    ["2025-03-05_DG1I6bUuIwf_1", 1000,1000, 0, "Man walking past a brightly lit Mini Markt with produce outside at night"],
   ]},
 ];
 
 const fmt = d => new Date(d + "T12:00:00").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+POSTS.sort((a, b) => b.date.localeCompare(a.date));   // newest first, whatever order entries were added in
 const total = POSTS.length;
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const month = d => new Date(d + "T12:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+document.getElementById("span").textContent = `${month(POSTS[total - 1].date)} — ${month(POSTS[0].date)}`;
 // frame numbers count up in time order, like a roll: the oldest post is 01A
 const frameNo = i => String(total - i).padStart(2, "0") + "A";
 document.getElementById("nPosts").textContent = total;
@@ -298,12 +302,12 @@ document.getElementById("nFrames").textContent = POSTS.reduce((n, p) => n + p.it
 
 const sheet = document.getElementById("sheet");
 const frames = POSTS.map((p, i) => {
-  const [name, w, h, isVid] = p.items[0];
+  const [name, w, h, isVid, alt] = p.items[0];
   const n = p.items.length, hasVid = p.items.some(it => it[3]);
   const badge = n > 1 || hasVid ? `<span class="badge">${n > 1 ? "1/" + n : ""}${n > 1 && hasVid ? " " : ""}${hasVid ? "▶" : ""}</span>` : "";
   const fig = document.createElement("figure");
   fig.className = "frame";
-  fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/grid/${name}-1000.webp" srcset="photos/grid/${name}-600.webp 600w, photos/grid/${name}-1000.webp 1000w" sizes="(max-width: 1040px) 50vw, 460px" width="${w}" height="${h}" alt="Photograph, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
+  fig.innerHTML = `<button type="button" aria-label="Open post from ${fmt(p.date)}${n > 1 ? ", " + n + " frames" : ""}">${badge}<img src="photos/grid/${name}-1000.webp" srcset="photos/grid/${name}-600.webp 600w, photos/grid/${name}-1000.webp 1000w" sizes="(max-width: 1040px) 50vw, 460px" width="${w}" height="${h}" alt="${esc(alt || "Photograph")}, ${fmt(p.date)}" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></button>
     <figcaption><span class="n">${frameNo(i)}</span><span>${fmt(p.date)}</span></figcaption>`;
   fig.querySelector("button").addEventListener("click", () => open(i));
   fig.ratio = h / w;
@@ -332,15 +336,15 @@ window.addEventListener("resize", layout);
 const lb = document.getElementById("lb"), track = document.getElementById("track"), dots = document.getElementById("dots");
 let post = 0, slide = 0, lastFocus = null;
 
-function slideEl([name, w, h, isVid]) {
+function slideEl([name, w, h, isVid, alt]) {
   const s = document.createElement("div");
   s.className = "slide";
   if (isVid) {
-    s.innerHTML = `<video src="photos/video/${name}.mp4" poster="photos/grid/${name}-1000.webp" width="${w}" height="${h}" muted loop playsinline controls preload="metadata"></video>`;
+    s.innerHTML = `<video src="photos/video/${name}.mp4" poster="photos/grid/${name}-1000.webp" width="${w}" height="${h}" aria-label="${esc(alt || "Video")}" muted loop playsinline controls preload="metadata"></video>`;
   } else {
     const img = new Image();
-    img.src = `photos/grid/${name}-1000.webp`; img.width = w; img.height = h; img.alt = "Photograph";
-    const big = new Image(); big.onload = () => { img.src = big.src; }; big.src = `photos/large/${name}.jpg`;
+    img.src = `photos/grid/${name}-1000.webp`; img.width = w; img.height = h; img.alt = alt || "Photograph";
+    const big = new Image(); big.onload = () => { img.src = big.src; }; big.src = `photos/large/${name}.webp`;
     s.appendChild(img);
   }
   return s;
@@ -374,6 +378,11 @@ function setSlide(k) {
   track.querySelectorAll("video").forEach((v, j) => {
     if (v.closest(".slide") === track.children[k]) v.play().catch(() => {}); else v.pause();
   });
+  // on a post's last frame, start fetching the next post's first photo so moving on feels instant
+  if (k === n - 1) {
+    const [name, , , isVid] = POSTS[(post + 1) % total].items[0];
+    if (!isVid) new Image().src = `photos/large/${name}.webp`;
+  }
 }
 function goSlide(k) { track.scrollTo({ left: k * track.clientWidth }); setSlide(k); }
 function step(dir) {
