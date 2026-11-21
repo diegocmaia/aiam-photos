@@ -111,6 +111,23 @@ h1 .dot { color: var(--edge); }
 figcaption { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; }
 figcaption .n { color: var(--edge); }
 
+/* colour timeline: one stripe per post, oldest to newest; a carousel's stripe stacks its frames' colours */
+.timeline { margin-top: clamp(8px, 2vw, 16px); }
+.strip { display: flex; gap: 2px; height: clamp(28px, 4vw, 44px); align-items: flex-end; }
+.strip button {
+  all: unset; flex: 1 1 0; min-width: 0; height: 100%; cursor: pointer;
+  display: flex; flex-direction: column; transform-origin: bottom;
+  transition: transform .25s cubic-bezier(.3,.7,.2,1);
+}
+.strip button span { flex: 1 1 0; }
+.strip button:hover, .strip button:focus-visible { transform: scaleY(1.35); }
+.strip button:focus-visible { outline: 2px solid var(--edge); outline-offset: 2px; }
+.tl-meta {
+  display: flex; justify-content: space-between; gap: 12px; margin-top: 8px;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: 10px; font-variant-numeric: tabular-nums;
+}
+.tl-meta #tlNow { color: var(--fg); text-align: center; }
+.tl-meta #tlNow .n { color: var(--edge); }
 footer {
   margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line);
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px;
@@ -193,6 +210,11 @@ a:hover { color: var(--fg); }
   </header>
 
   <main class="sheet" id="sheet"></main>
+
+  <section class="timeline" aria-label="Colour timeline, oldest to newest">
+    <div class="strip" id="strip"></div>
+    <div class="tl-meta"><span id="tlStart"></span><span id="tlNow" aria-live="polite"></span><span id="tlEnd"></span></div>
+  </section>
 
   <footer>
     <span>© aiam. All photographs by the author.</span>
@@ -501,6 +523,27 @@ function route() {
   if (i >= 0) { if (lb.hidden || i !== post) show(i); }
   else if (!lb.hidden) { pushed = false; hide(); }
 }
+// Colour timeline under the grid.
+{
+  const strip = document.getElementById("strip"), now = document.getElementById("tlNow");
+  const idle = "Every post in colour, oldest to newest";
+  now.textContent = idle;
+  document.getElementById("tlStart").textContent = month(POSTS[total - 1].date);
+  document.getElementById("tlEnd").textContent = month(POSTS[0].date);
+  for (let i = total - 1; i >= 0; i--) {
+    const p = POSTS[i], b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", `${frameNo(i)}, ${fmt(p.date)}`);
+    b.innerHTML = p.items.map(it => `<span style="background:${it[5]}"></span>`).join("");
+    const show = () => { now.innerHTML = `<span class="n">${frameNo(i)}</span> · ${fmt(p.date)}${p.items.length > 1 ? " · " + p.items.length + " frames" : ""}`; };
+    b.addEventListener("mouseenter", show); b.addEventListener("focus", show);
+    b.addEventListener("mouseleave", () => { now.textContent = idle; });
+    b.addEventListener("blur", () => { now.textContent = idle; });
+    b.addEventListener("click", () => open(i));
+    strip.appendChild(b);
+  }
+}
+
 window.addEventListener("popstate", route);
 route();   // a shared link opens straight into its post
 document.getElementById("lbClose").onclick = close;
