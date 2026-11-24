@@ -135,6 +135,8 @@ footer {
 }
 a { color: inherit; text-underline-offset: 3px; }
 a:hover { color: var(--fg); }
+footer a { text-decoration: none; }                 /* quiet until you point at it */
+footer a:hover, footer a:focus-visible { text-decoration: underline; }
 
 /* stack badge on posts with more than one frame */
 .frame button { position: relative; }
@@ -218,6 +220,7 @@ a:hover { color: var(--fg); }
 
   <footer>
     <span>© aiam. All photographs by the author.</span>
+    <a href="https://github.com/diegocmaia" target="_blank" rel="noopener">GitHub ↗</a>
   </footer>
 </div>
 
