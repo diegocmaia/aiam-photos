@@ -1,6 +1,6 @@
 # aiam.photos
 
-Photographs by aiam, live at https://diegocmaia.github.io/aiam-photos/
+Photographs by aiam, live at https://aiam.pics/
 
 A single static page with no build step: `index.html` plus the `photos/` folder. GitHub Pages publishes `main` within a minute or two of each push.
 

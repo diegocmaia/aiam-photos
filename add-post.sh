@@ -115,5 +115,5 @@ open("index.html", "w", encoding="utf-8").write(src.replace(anchor, anchor + blo
 PY
 
 echo
-echo "Post $id ($n file$([ "$n" -gt 1 ] && echo s)) added. Its link: https://diegocmaia.github.io/aiam-photos/#$id"
+echo "Post $id ($n file$([ "$n" -gt 1 ] && echo s)) added. Its link: https://aiam.pics/#$id"
 echo "Next: check it with 'git status', then:  git add -A && git commit -m \"Add post $id\" && git push"
