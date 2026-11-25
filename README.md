@@ -19,6 +19,14 @@ git add -A && git commit -m "Add post" && git push
 
 It needs `cwebp` and `ffmpeg` (`brew install webp ffmpeg`); `sips` is built into macOS.
 
+## Posting to Instagram
+
+```bash
+./export-instagram.sh latest          # or a post id, e.g. ./export-instagram.sh 20261201a
+```
+
+Writes Instagram-ready files to `~/Desktop/instagram/<id>/`: `1.jpg`, `2.jpg`… in carousel order (1080px wide, centre-cropped only when a photo is taller than 4:5 or wider than 1.91:1), videos copied as `.mp4`, and a `caption.txt` with the post's link and each slide's description to paste into Instagram's alt-text field. Add a `tools/hashtags.txt` to have those appended to the caption automatically. Needs only `sips` and `python3`.
+
 ## How the files are organised
 
 | Folder | What's in it |
